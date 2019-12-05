@@ -3,8 +3,7 @@ package com.freak.lifecycletask;
 import android.app.Application;
 
 
-import com.freak.lifecycle.LifecycleFloatWindow;
-import com.freak.lifecycle.life.LifecycleOverlayWindow;
+import com.freak.lifecycle.LifecycleOverlayWindow;
 
 
 /**
@@ -14,7 +13,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+//        LifecycleOverlayWindow.init(this, BuildConfig.DEBUG);
         LifecycleOverlayWindow.init(this, BuildConfig.DEBUG);
-//        LifecycleFloatWindow.start(this);
     }
 }

@@ -1,4 +1,4 @@
-package com.freak.lifecycle.life;
+package com.freak.lifecycle;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -27,7 +27,7 @@ public class RequestOverlayActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 10 && Settings.canDrawOverlays(this)) {
-            LifecycleOverlayWindow.addWindow(getApplication());
+            LifecycleOverlayWindow.start(getApplication());
         }else{
             Toast.makeText(getApplicationContext(), "window permission denied, cannot show activity task", Toast.LENGTH_SHORT).show();
         }

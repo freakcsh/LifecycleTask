@@ -1,9 +1,11 @@
 package com.freak.lifecycle;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,8 +15,8 @@ import androidx.annotation.Nullable;
 /**
  * Created by Freak on 2019/12/1.
  */
-public class TaskLayout extends FrameLayout {
-    private LinearLayout mLinearLayout;
+public class TaskLayout extends LinearLayout {
+    public static LinearLayout mLinearLayout;
     private TextView mTextView;
 
     public TaskLayout(@NonNull Context context) {
@@ -31,18 +33,43 @@ public class TaskLayout extends FrameLayout {
     }
 
     private void init(@NonNull Context context) {
-        inflate(context, R.layout.layout_task, this);
-        mLinearLayout = findViewById(R.id.container);
-        mTextView = findViewById(R.id.tv_title);
+        // 设置总体布局属性
+        this.setOrientation(LinearLayout.VERTICAL);
+        this.setGravity(Gravity.CENTER_VERTICAL);
+        ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mLinearLayout = createLinearLayout();
+        mLinearLayout.setGravity(Gravity.CENTER_VERTICAL);
+        mLinearLayout.setOrientation(VERTICAL);
+        this.addView(mLinearLayout);
+        mTextView = new TextView(context);
+        mTextView.setTextColor(Color.parseColor("#00FF00"));
+        mTextView.setTextSize(12);
+        mTextView.setIncludeFontPadding(false);
+        mTextView.setGravity(Gravity.CENTER);
+        mTextView.setLayoutParams(params);
+        mTextView.setPadding(15, 5, 15, 5);
+//        this.addView(mTextView,0);
     }
+
+    public  LinearLayout createLinearLayout() {
+        LinearLayout layout = new LinearLayout(getContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setBackgroundColor(Color.parseColor("#000000"));
+        layout.setId(R.id.create_linear_layout);
+        layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        return layout;
+    }
+
 
     public void setTitle(String title) {
         mTextView.setText("[" + title + "]");
     }
-    public void addFirst(View view){
-        mLinearLayout.addView(view,0);
+
+    public void addFirst(View view) {
+        this.addView(view, 0);
     }
+
     public void addSecond(View view) {
-        mLinearLayout.addView(view, 1);
+        this.addView(view, 1);
     }
 }

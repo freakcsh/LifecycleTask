@@ -1,13 +1,16 @@
 package com.freak.lifecycle;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
@@ -25,10 +28,8 @@ import java.util.Map;
  */
 public class ActivityTaskView extends LinearLayout implements Runnable {
     private static final String TAG = ActivityTaskView.class.getSimpleName();
-    private ViewGroup mLinearLayout;
-    private View mTinyView;
-    private View mTaskView;
-    private View mEmptyView;
+    public static ViewGroup mLinearLayout;
+    private TextView mTaskView;
     /**
      * 等待fragment销毁
      */
@@ -57,16 +58,33 @@ public class ActivityTaskView extends LinearLayout implements Runnable {
     }
 
     private void init(Context context) {
-        inflate(context, R.layout.view_activity_task, this);
         mStatusHeight = Utils.getStatusBarHeight(context);
         mScreenWidth = Utils.getScreenWidth(context);
-        mLinearLayout = findViewById(R.id.container);
-        mTinyView = findViewById(R.id.tiny_view);
-        mTaskView = findViewById(R.id.main_view);
-        mEmptyView = findViewById(R.id.view_empty);
+        // 设置总体布局属性
+        this.setOrientation(LinearLayout.VERTICAL);
+        this.setGravity(Gravity.CENTER_VERTICAL);
+        mLinearLayout=createLinearLayout();
+        this.addView(mLinearLayout);
+        ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mTaskView = new TextView(context);
+        mTaskView.setTextColor(Color.parseColor("#000000"));
+        mTaskView.setTextSize(12);
+        mTaskView.setIncludeFontPadding(false);
+        mTaskView.setGravity(Gravity.CENTER);
+        mTaskView.setLayoutParams(params);
+        mTaskView.setPadding(15, 5, 15, 5);
+        this.addView(mTaskView);
         mPendingRemove = new HashSet<>();
     }
 
+    private LinearLayout createLinearLayout() {
+        LinearLayout layout = new LinearLayout(getContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setBackgroundColor(Color.parseColor("#333333"));
+        layout.setId(R.id.create_linear_layout);
+        layout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        return layout;
+    }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
@@ -81,9 +99,9 @@ public class ActivityTaskView extends LinearLayout implements Runnable {
                 float y = event.getRawY();
                 WindowManager.LayoutParams params = (WindowManager.LayoutParams) getLayoutParams();
                 params.x = (int) (x - mInnerX);
-                params.y = (int) (y - mInnerY);
+                params.y = (int) (y - mInnerY - mStatusHeight);
                 updateLayout(params);
-                if (Math.abs(event.getX() - mInnerX) > 20 || Math.abs(event.getY() - mInnerX) > 20) {
+                if (Math.abs(event.getX() - mInnerX) > 20 || Math.abs(event.getY() - mInnerY) > 20) {
                     removeCallbacks(this);
                 }
                 break;
@@ -91,7 +109,7 @@ public class ActivityTaskView extends LinearLayout implements Runnable {
                 removeCallbacks(this);
                 if (System.currentTimeMillis() - downTime < 100
                         && Math.abs(event.getX() - mInnerX) < 20
-                        && Math.abs(event.getY() - mInnerX) < 20) {
+                        && Math.abs(event.getY() - mInnerY) < 20) {
                     doClick();
                 }
                 moveToBorder();
@@ -115,15 +133,10 @@ public class ActivityTaskView extends LinearLayout implements Runnable {
     }
 
     private void doClick() {
-        Log.e(TAG,"点击");
-        boolean visible = mTaskView.getVisibility() == VISIBLE;
-        mTaskView.setVisibility(visible ? GONE : VISIBLE);
-        mTinyView.setVisibility(!visible ? GONE : VISIBLE);
+        Log.e(TAG, "点击");
     }
 
     private void doLongClick() {
-//        Intent intent = new Intent(getContext(), MainActivity.class);
-//        getContext().startActivity(intent);
     }
 
     private void updateLayout(WindowManager.LayoutParams params) {
@@ -134,7 +147,7 @@ public class ActivityTaskView extends LinearLayout implements Runnable {
     }
 
     public void add(LifecycleInfo lifecycleInfo) {
-        mActivityTree.add(lifecycleInfo.getTask(), lifecycleInfo.getActivity(), lifecycleInfo.getLificycle());
+        mActivityTree.add(lifecycleInfo.getTask(), lifecycleInfo.getActivity(), lifecycleInfo.getLifecycle());
         notifyData();
     }
 
@@ -148,8 +161,8 @@ public class ActivityTaskView extends LinearLayout implements Runnable {
         }
     }
 
-    private void update(LifecycleInfo lifecycleInfo) {
-        mActivityTree.updateLifecycle(lifecycleInfo.getActivity(), lifecycleInfo.getLificycle());
+    public void update(LifecycleInfo lifecycleInfo) {
+        mActivityTree.updateLifecycle(lifecycleInfo.getActivity(), lifecycleInfo.getLifecycle());
         ViewPool.getInstance().notifyLifecycleChange(lifecycleInfo);
     }
 
@@ -198,7 +211,6 @@ public class ActivityTaskView extends LinearLayout implements Runnable {
             }
             mLinearLayout.addView(taskLayout, 0);
         }
-        mEmptyView.setVisibility(mLinearLayout.getChildCount() == 0 ? VISIBLE : GONE);
     }
 
     public void clear() {

@@ -1,12 +1,14 @@
 package com.freak.lifecycle;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.widget.AppCompatTextView;
 
@@ -19,8 +21,16 @@ import java.util.Observer;
  * Created by Freak on 2019/12/1.
  */
 public class LifecycleTextView extends AppCompatTextView implements Observer {
-    private static AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(8, true);
+    private static AbsoluteSizeSpan absoluteSizeSpan = new AbsoluteSizeSpan(10, true);
+    private static final int[] COLORS = {
+            0xffffffff,//onActivityCreated
+            0x33ff0000,//onActivityStarted
+            0xffff0000,//onActivityResumed
 
+            0xff000000,//onActivityPaused
+            0x33000000,//onActivityStopped
+            0xffffffff//onActivityDestroyed
+    };
     public LifecycleTextView(Context context) {
         this(context, null);
     }
@@ -31,14 +41,17 @@ public class LifecycleTextView extends AppCompatTextView implements Observer {
 
     public LifecycleTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         setMaxLines(1);
-        setTextSize(10);
+        setTextSize(12);
+        setLayoutParams(params);
+        setPadding(15, 5, 15, 5);
     }
 
     public void setInfoText(String string, String lifecycle) {
         String hash = string.substring(string.indexOf("@"));
         setTag(hash);
-        string = string.replace(hash, "");
+        string = string.replace(hash, "... ");
         addLifecycle(string, lifecycle);
     }
 
@@ -46,10 +59,25 @@ public class LifecycleTextView extends AppCompatTextView implements Observer {
 //        lifecycle = lifecycle.replace("onFragment", "");
 //        lifecycle = lifecycle.replace("onActivity", "");
 //        lifecycle = lifecycle.replace("SaveInstanceState", "SIS");
-        setTextColor(lifecycle.contains("onResume") ? Color.BLACK : Color.WHITE);
-        SpannableString span = new SpannableString(string + lifecycle);
-        span.setSpan(absoluteSizeSpan, string.length(), span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        setText(span);
+        Log.e(LifecycleOverlayWindow.TAG,"addLifecycle "+lifecycle);
+        if (!TextUtils.isEmpty(lifecycle)){
+            if (lifecycle.contains("onActivityCreated")){
+                setTextColor(COLORS[0]);
+            }else if (lifecycle.contains("onActivityStarted")){
+                setTextColor(COLORS[1]);
+            }else if (lifecycle.contains("onActivityResumed")){
+                setTextColor(COLORS[2]);
+            }else if (lifecycle.contains("onActivityPaused")){
+                setTextColor(COLORS[3]);
+            }else if (lifecycle.contains("onActivityStopped")){
+                setTextColor(COLORS[4]);
+            }else if (lifecycle.contains("onActivityDestroyed")){
+                setTextColor(COLORS[5]);
+            }
+            SpannableString span = new SpannableString(string + lifecycle);
+            span.setSpan(absoluteSizeSpan, string.length(), span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            setText(span);
+        }
     }
 
     @Override
@@ -62,9 +90,8 @@ public class LifecycleTextView extends AppCompatTextView implements Observer {
             String string = info.getFragment() != null ? info.getFragment().get(0) : info.getActivity();
             String hash = string.substring(string.indexOf("@"));
             if (TextUtils.equals((CharSequence) getTag(), hash)) {
-                string = getText().toString();
-                string = string.substring(0, string.lastIndexOf(" ") + 1);
-                addLifecycle(string, info.getLificycle());
+                string = string.replace(hash, "... ");
+                addLifecycle(string, info.getLifecycle());
             }
         }
     }

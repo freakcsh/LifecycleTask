@@ -33,7 +33,7 @@ public class FragmentTaskView extends LinearLayout {
     }
 
     public void add(LifecycleInfo lifecycleInfo) {
-        mFragmentTree.add(lifecycleInfo.getFragment(), lifecycleInfo.getLificycle());
+        mFragmentTree.add(lifecycleInfo.getFragment(), lifecycleInfo.getLifecycle());
         notifyData();
     }
 
@@ -46,7 +46,7 @@ public class FragmentTaskView extends LinearLayout {
     }
 
     public void update(LifecycleInfo lifecycleInfo) {
-        mFragmentTree.updateLifecycle(lifecycleInfo.getFragment().get(0), lifecycleInfo.getLificycle());
+        mFragmentTree.updateLifecycle(lifecycleInfo.getFragment().get(0), lifecycleInfo.getLifecycle());
         ViewPool.getInstance().notifyLifecycleChange(lifecycleInfo);
     }
 

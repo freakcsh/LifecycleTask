@@ -19,11 +19,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name="com.freak.lifecycle.LifecycleReceiver">
-            <intent-filter>
-                <action android:name="com.freak.lifecycle.ACTION_UPDATE_LIFECYCLE"/>
-            </intent-filter>
-        </receiver>
+        <activity
+            android:name=".DialogActivity"
+            android:theme="@style/dialogstyle" />
+        <activity android:name=".StandardActivity" />
+        <activity android:name=".SingleTopActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".SingleTaskActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".SingleInstanceActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name=".DemoFragmentActivity" />
     </application>
     <!--    悬浮窗权限-->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />

@@ -1,10 +1,10 @@
 package com.freak.lifecycletask;
 
-public class MainActivity extends BaseActivity {
+public class DialogActivity extends BaseActivity {
 
+    @Override
     protected void init() {
         setContentView(R.layout.activity_base);
-        setTitle(getClass().getSimpleName());
         addCheckBoxes();
     }
 }

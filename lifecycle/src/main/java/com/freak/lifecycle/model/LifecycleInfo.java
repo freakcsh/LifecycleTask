@@ -6,24 +6,24 @@ import java.util.List;
  * Created by Freak on 2019/12/1.
  */
 public class LifecycleInfo {
-    private String lificycle;
+    private String lifecycle;
     private String task;
     private String activity;
     private List<String> fragment;
 
-    public LifecycleInfo(String lificycle, String task, String activity, List<String> fragment) {
-        this.lificycle = lificycle;
+    public LifecycleInfo(String lifecycle, String task, String activity, List<String> fragment) {
+        this.lifecycle = lifecycle;
         this.task = task;
         this.activity = activity;
         this.fragment = fragment;
     }
 
-    public String getLificycle() {
-        return lificycle;
+    public String getLifecycle() {
+        return lifecycle;
     }
 
-    public void setLificycle(String lificycle) {
-        this.lificycle = lificycle;
+    public void setLifecycle(String lifecycle) {
+        this.lifecycle = lifecycle;
     }
 
     public String getTask() {
@@ -48,5 +48,15 @@ public class LifecycleInfo {
 
     public void setFragment(List<String> fragment) {
         this.fragment = fragment;
+    }
+
+    @Override
+    public String toString() {
+        return "LifecycleInfo{" +
+                "lifecycle='" + lifecycle + '\'' +
+                ", task='" + task + '\'' +
+                ", activity='" + activity + '\'' +
+                ", fragment=" + fragment +
+                '}';
     }
 }

@@ -113,7 +113,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void startFragmentActivity(View v){
-        Intent intent = new Intent(this, DemoFragmentActivity.class);
+        Intent intent = new Intent(this, DemoFragActivity.class);
         addFlags(intent);
         startActivity(intent);
     }

@@ -43,35 +43,38 @@ public class LifecycleTextView extends AppCompatTextView implements Observer {
         super(context, attrs, defStyleAttr);
         ViewGroup.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         setMaxLines(1);
-        setTextSize(12);
+        setTextSize(10);
         setLayoutParams(params);
-        setPadding(15, 5, 15, 5);
     }
 
     public void setInfoText(String string, String lifecycle) {
         String hash = string.substring(string.indexOf("@"));
         setTag(hash);
-        string = string.replace(hash, "... ");
+        string = string.replace("Activity", "Activity…");
+        string = string.replace("Fragment", "Fragment…");
+        string = string.replace(hash, " ");
         addLifecycle(string, lifecycle);
     }
 
     private void addLifecycle(String string, String lifecycle) {
-//        lifecycle = lifecycle.replace("onFragment", "");
-//        lifecycle = lifecycle.replace("onActivity", "");
-//        lifecycle = lifecycle.replace("SaveInstanceState", "SIS");
         Log.e(LifecycleOverlayWindow.TAG,"addLifecycle "+lifecycle);
         if (!TextUtils.isEmpty(lifecycle)){
-            if (lifecycle.contains("onActivityCreated")){
+            lifecycle = lifecycle.replace("onFragment", "");
+            lifecycle = lifecycle.replace("onActivity", "");
+            lifecycle = lifecycle.replace("SaveInstanceState", "SIS");
+            if (lifecycle.contains("Created")){
                 setTextColor(COLORS[0]);
-            }else if (lifecycle.contains("onActivityStarted")){
+            }else if (lifecycle.contains("Started")){
                 setTextColor(COLORS[1]);
-            }else if (lifecycle.contains("onActivityResumed")){
+            }else if (lifecycle.contains("Resumed")){
                 setTextColor(COLORS[2]);
-            }else if (lifecycle.contains("onActivityPaused")){
+            }else if (lifecycle.contains("Paused")){
                 setTextColor(COLORS[3]);
-            }else if (lifecycle.contains("onActivityStopped")){
+            }else if (lifecycle.contains("Stopped")){
                 setTextColor(COLORS[4]);
-            }else if (lifecycle.contains("onActivityDestroyed")){
+            }else if (lifecycle.contains("Destroyed")){
+                setTextColor(COLORS[5]);
+            }else if (lifecycle.contains("SIS")){
                 setTextColor(COLORS[5]);
             }
             SpannableString span = new SpannableString(string + lifecycle);
@@ -87,10 +90,12 @@ public class LifecycleTextView extends AppCompatTextView implements Observer {
         }
         if (arg instanceof LifecycleInfo) {
             LifecycleInfo info = (LifecycleInfo) arg;
+            Log.e("TAG","信息  "+info.toString());
             String string = info.getFragment() != null ? info.getFragment().get(0) : info.getActivity();
             String hash = string.substring(string.indexOf("@"));
             if (TextUtils.equals((CharSequence) getTag(), hash)) {
-                string = string.replace(hash, "... ");
+                string = getText().toString();
+                string = string.substring(0, string.lastIndexOf(" ") + 1);
                 addLifecycle(string, info.getLifecycle());
             }
         }

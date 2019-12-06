@@ -1,5 +1,7 @@
 package com.freak.lifecycle.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,6 +23,7 @@ public class ActivityTree extends LinkedHashMap<String, ArrayList<String>> {
     }
 
     public void remove(String key, String value) {
+        Log.e("TAG","key "+key+"  value "+value);
         ArrayList<String> values = get(key);
         if (values == null) {
             return;

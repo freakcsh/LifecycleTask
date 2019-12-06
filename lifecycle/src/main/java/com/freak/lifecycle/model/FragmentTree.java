@@ -1,6 +1,10 @@
 package com.freak.lifecycle.model;
 
 
+import android.util.Log;
+
+import com.freak.lifecycle.LifecycleOverlayWindow;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -10,9 +14,9 @@ import java.util.List;
  * Created by Freak on 2019/12/1.
  */
 public class FragmentTree extends LinkedHashMap<String, ArrayList<String>> {
-    private static final String tab1 = "" + "|";
-    private static final String tab2 = "" + "|" + "_";
-    private static final String tab3 = "" + "|" + "-";
+    private static final String tab1 = "" + '\u2502';// |
+    private static final String tab2 = "" + '\u2514' + '\u2500';// |_
+    private static final String tab3 = "" + '\u251c' + '\u2500';// |-
     private Node mNode;
     private HashMap<String, String> lifeMap = new HashMap<>();
 
@@ -82,6 +86,7 @@ public class FragmentTree extends LinkedHashMap<String, ArrayList<String>> {
     private void convert(List<String> list, Node node, String pre, boolean end) {
         if (node != mNode) {
             String string = pre + (end ? tab2 : tab3) + node.name;
+            Log.e(LifecycleOverlayWindow.TAG,"convert string "+string);
             list.add(string);
         }
         int i = 0;

@@ -73,7 +73,7 @@ public class ActivityTaskView extends LinearLayout implements Runnable {
         mTaskView.setGravity(Gravity.CENTER);
         mTaskView.setLayoutParams(params);
         mTaskView.setPadding(15, 5, 15, 5);
-        this.addView(mTaskView);
+        this.addView(mTaskView,0);
         mPendingRemove = new HashSet<>();
     }
 
@@ -153,9 +153,11 @@ public class ActivityTaskView extends LinearLayout implements Runnable {
 
     public void remove(LifecycleInfo lifecycleInfo) {
         if (ViewPool.getInstance().getFragmentTaskView(lifecycleInfo.getActivity()) != null) {
+            Log.e("TAG","fragment activity 不为null");
             mPendingRemove.add(lifecycleInfo.getActivity());
             update(lifecycleInfo);
         } else {
+            Log.e("TAG","fragment activity 为null");
             mActivityTree.remove(lifecycleInfo.getTask(), lifecycleInfo.getActivity());
             notifyData();
         }
@@ -181,6 +183,7 @@ public class ActivityTaskView extends LinearLayout implements Runnable {
             fragmentTaskView.remove(lifecycleInfo);
             if (fragmentTaskView.getChildCount() == 0 && mPendingRemove.contains(lifecycleInfo.getActivity())) {
                 mPendingRemove.remove(lifecycleInfo.getActivity());
+                Log.e(LifecycleOverlayWindow.TAG,"移除fragment activity");
                 remove(lifecycleInfo);
             }
         }
@@ -201,6 +204,9 @@ public class ActivityTaskView extends LinearLayout implements Runnable {
             taskLayout.setTitle(entry.getKey());
             for (String activity : entry.getValue()) {
                 LifecycleTextView textView = ViewPool.getInstance().getActivityTextView(getContext());
+                //TODO 问题出现的地方
+                Log.e("TAG","string "+activity+"  mActivityTree.getLifecycle(activity) "+mActivityTree.getLifecycle(activity)+"  activity "+activity);
+
                 textView.setInfoText(activity, mActivityTree.getLifecycle(activity));
                 taskLayout.addFirst(textView);
 
@@ -209,7 +215,7 @@ public class ActivityTaskView extends LinearLayout implements Runnable {
                     taskLayout.addSecond(view);
                 }
             }
-            mLinearLayout.addView(taskLayout, 0);
+            mLinearLayout.addView(taskLayout,0);
         }
     }
 

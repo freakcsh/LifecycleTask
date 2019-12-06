@@ -11,7 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DemoFragmentActivity extends AppCompatActivity {
+public class DemoFragActivity extends AppCompatActivity {
 
     List<Fragment> fragmentList = new ArrayList<>();
 

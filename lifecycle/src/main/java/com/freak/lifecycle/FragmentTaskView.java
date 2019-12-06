@@ -2,6 +2,7 @@ package com.freak.lifecycle;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
@@ -40,6 +41,7 @@ public class FragmentTaskView extends LinearLayout {
     public void remove(LifecycleInfo lifecycleInfo) {
         mFragmentTree.remove(lifecycleInfo.getFragment());
         notifyData();
+        Log.e(LifecycleOverlayWindow.TAG,"getChildCount() "+getChildCount());
         if (getChildCount() == 0) {
             ViewPool.getInstance().removeFragmentTaskView(lifecycleInfo.getActivity());
         }
@@ -57,8 +59,9 @@ public class FragmentTaskView extends LinearLayout {
             List<String> strings = mFragmentTree.convertToList();
             for (String string : strings) {
                 LifecycleTextView lifecycleTextView = ViewPool.getInstance().getActivityTextView(getContext());
-                String[] arr = string.split("-");
+                String[] arr = string.split(String.valueOf('\u2500'));
                 String name = arr[arr.length - 1];
+                Log.e("TAG","string "+string+"  mFragmentTree.getLifecycle(name) "+mFragmentTree.getLifecycle(name)+"  name "+name);
                 lifecycleTextView.setInfoText(string, mFragmentTree.getLifecycle(name));
                 addView(lifecycleTextView);
             }

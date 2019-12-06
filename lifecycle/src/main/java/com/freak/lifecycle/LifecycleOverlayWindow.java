@@ -3,12 +3,14 @@ package com.freak.lifecycle;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -60,14 +62,14 @@ public class LifecycleOverlayWindow {
         if (!debug) {
             return;
         }
-//        if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(app)) {
-//            Intent intent = new Intent(app, RequestOverlayActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            app.startActivity(intent);
-//        } else {
-//            start(app);
-//        }
-        start(app);
+        if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(app)) {
+            Intent intent = new Intent(app, RequestOverlayActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            app.startActivity(intent);
+        } else {
+            start(app);
+        }
+//        start(app);
     }
     private static void addViewToWindow(Application app, View view) {
         WindowManager windowManager = (WindowManager) app.getSystemService(Context.WINDOW_SERVICE);
@@ -284,19 +286,28 @@ public class LifecycleOverlayWindow {
                 LifecycleInfo lifecycleInfo = mQueue.poll();
                 if (lifecycleInfo != null && activityTaskView != null) {
                     if (lifecycleInfo.getFragment() != null) {
-                        if (lifecycleInfo.getLifecycle().contains("PreAttach")) {
+                        Log.e(TAG,"Lifecycle handleMessage "+lifecycleInfo.getLifecycle());
+                        if (lifecycleInfo.getLifecycle().contains("PreAttached")) {
                             activityTaskView.addFragmentTaskView(lifecycleInfo);
-                        } else if (lifecycleInfo.getLifecycle().contains("Detach")) {
+                            Log.e("TAG","添加fragment");
+                        } else if (lifecycleInfo.getLifecycle().contains("Detached")) {
+                            Log.e("TAG","删除fragment");
                             activityTaskView.removeFragmentTaskView(lifecycleInfo);
                         } else {
+                            Log.e("TAG","更新fragment");
+                            Log.e("TAG","lifecycleInfo "+lifecycleInfo.toString());
                             activityTaskView.updateFragmentTaskView(lifecycleInfo);
                         }
                     } else {
                         if (lifecycleInfo.getLifecycle().contains("Create")) {
+                            Log.e("TAG","添加activity");
                             activityTaskView.add(lifecycleInfo);
                         } else if (lifecycleInfo.getLifecycle().contains("Destroy")) {
+                            Log.e("TAG","移除activity");
                             activityTaskView.remove(lifecycleInfo);
                         } else {
+                            Log.e("TAG","更新activity");
+                            Log.e("TAG","lifecycleInfo "+lifecycleInfo.toString());
                             activityTaskView.update(lifecycleInfo);
                         }
                     }

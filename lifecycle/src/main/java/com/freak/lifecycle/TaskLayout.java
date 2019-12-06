@@ -43,12 +43,12 @@ public class TaskLayout extends LinearLayout {
         this.addView(mLinearLayout);
         mTextView = new TextView(context);
         mTextView.setTextColor(Color.parseColor("#00FF00"));
-        mTextView.setTextSize(12);
+        mTextView.setTextSize(10);
         mTextView.setIncludeFontPadding(false);
         mTextView.setGravity(Gravity.CENTER);
         mTextView.setLayoutParams(params);
-        mTextView.setPadding(15, 5, 15, 5);
-//        this.addView(mTextView,0);
+//        mTextView.setPadding(15, 5, 15, 5);
+        this.addView(mTextView,0);
     }
 
     public  LinearLayout createLinearLayout() {
@@ -66,10 +66,10 @@ public class TaskLayout extends LinearLayout {
     }
 
     public void addFirst(View view) {
-        this.addView(view, 0);
+        this.addView(view, 1);
     }
 
     public void addSecond(View view) {
-        this.addView(view, 1);
+        this.addView(view, 2);
     }
 }

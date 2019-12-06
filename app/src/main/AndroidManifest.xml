@@ -31,7 +31,8 @@
         <activity
             android:name=".SingleInstanceActivity"
             android:launchMode="singleInstance" />
-        <activity android:name=".DemoFragmentActivity" />
+        <activity android:name=".DemoFragActivity" />
+        <activity android:name="com.freak.lifecycle.RequestOverlayActivity"/>
     </application>
     <!--    悬浮窗权限-->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
